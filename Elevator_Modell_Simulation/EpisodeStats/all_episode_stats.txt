@@ -8,3 +8,8 @@ Episode 7: Durchschnittliche Wartezeit: 23.68 Sekunden, Durchschnittliche Fahrze
 Episode 8: Durchschnittliche Wartezeit: 25.21 Sekunden, Durchschnittliche Fahrzeit: 48.85 Sekunden, Durchschnittliche Gesamtzeit: 74.07 Sekunden
 Episode 9: Durchschnittliche Wartezeit: 24.55 Sekunden, Durchschnittliche Fahrzeit: 49.78 Sekunden, Durchschnittliche Gesamtzeit: 74.33 Sekunden
 Episode 10: Durchschnittliche Wartezeit: 23.44 Sekunden, Durchschnittliche Fahrzeit: 48.87 Sekunden, Durchschnittliche Gesamtzeit: 72.31 Sekunden
+Episode 11: Durchschnittliche Wartezeit: 23.59 Sekunden, Durchschnittliche Fahrzeit: 48.0 Sekunden, Durchschnittliche Gesamtzeit: 71.59 Sekunden
+Episode 1: Durchschnittliche Wartezeit: 17.11 Sekunden, Durchschnittliche Fahrzeit: 26.26 Sekunden, Durchschnittliche Gesamtzeit: 43.37 Sekunden
+Episode 1: Durchschnittliche Wartezeit: 24.08 Sekunden, Durchschnittliche Fahrzeit: 48.56 Sekunden, Durchschnittliche Gesamtzeit: 72.64 Sekunden
+Episode 1: Durchschnittliche Wartezeit: 25.11 Sekunden, Durchschnittliche Fahrzeit: 48.96 Sekunden, Durchschnittliche Gesamtzeit: 74.08 Sekunden
+Episode 1: Durchschnittliche Wartezeit: 18.32 Sekunden, Durchschnittliche Fahrzeit: 27.94 Sekunden, Durchschnittliche Gesamtzeit: 46.26 Sekunden
