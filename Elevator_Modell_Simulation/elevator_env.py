@@ -185,6 +185,9 @@ class ElevatorEnv(gym.Env):
         truncated = self.episode_steps > 45000
 
         obs = self._get_obs()
+        # get_action_mask() has the side effect of clearing pending_action
+        # after it's been acknowledged — this matches the training code where
+        # the mask is computed at the start of each decision cycle
         info = {"action_mask": self.get_action_mask()}
 
         return obs, reward, terminated, truncated, info
@@ -207,6 +210,9 @@ class ElevatorEnv(gym.Env):
         return np.array(obs, dtype=np.int32)
 
     def get_action_mask(self):
+        """Action mask WITH side effects — clears pending_action.
+        Must be called exactly once per step, before do_action().
+        This matches the original training code's semantics."""
         masks = []
         for elev in self.elevators:
             mask = np.zeros(3, dtype=bool)
@@ -232,6 +238,7 @@ class ElevatorEnv(gym.Env):
             masks.append(mask)
 
         return np.array(masks, dtype=bool)
+
 
     def log(self, time, guest_id, mode, wait_time, travel_time):
         self.logs.append({
