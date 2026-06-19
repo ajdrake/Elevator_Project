@@ -18,6 +18,16 @@ uv sync
 
 ### Run the simulation
 
+**Headless (no GUI required — works in CI, SSH, containers):**
+
+```bash
+uv run python Main.py --headless
+```
+
+Runs the full simulation with default parameters (10 floors, 3 elevators, 200 guests) and prints results to stdout. Charts are saved to `Visualizations/`.
+
+**With GUI (requires display):**
+
 ```bash
 uv run python Main.py
 ```
