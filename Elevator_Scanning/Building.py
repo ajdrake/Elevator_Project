@@ -5,8 +5,6 @@ import numpy as np
 import Dispatcher
 import Elevator
 from Guest import Guest
-import keyboard
-import time
 
 
 class Building:

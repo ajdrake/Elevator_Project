@@ -1,0 +1,22 @@
+[project]
+name = "elevator-scanning"
+version = "0.1.0"
+description = "Scan-based elevator control simulation with Pygame visualization"
+requires-python = ">=3.10"
+dependencies = [
+    "simpy>=4.0",
+    "pygame>=2.5",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "matplotlib>=3.7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
