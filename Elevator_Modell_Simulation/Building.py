@@ -1,18 +1,15 @@
 import sys
 import simpy
-import pygame
 import numpy as np
 from Elevator import Elevator
 from Guest import Guest
-import keyboard
-import time
 
 
 class Building:
 
     def __init__(
         self,
-        screen,
+        screen=None,
         env=None,
         num_floors=10,
         num_elevators=3,
@@ -30,15 +27,19 @@ class Building:
         no_floor_zero=False,
         spawn_intervall=120,
         modell=None,
+        headless=False,
     ):
         # 1) Normal SimPy environment, not real-time
         self.env = env or simpy.Environment()
         self.no_floor_zero = no_floor_zero
-        # 2) Pygame base config
+        self.headless = headless
+        # 2) Pygame base config (skip in headless mode)
         self.screen = screen
-        self.clock = pygame.time.Clock()
-        pygame.font.init()
-        self.font = pygame.font.SysFont(None, 24)
+        if not headless:
+            import pygame
+            self.clock = pygame.time.Clock()
+            pygame.font.init()
+            self.font = pygame.font.SysFont(None, 24)
         self.model = modell
         # 3) Parameters
         self.num_floors = num_floors
@@ -110,32 +111,36 @@ class Building:
         # 9) Start processes
         self.env.process(self.step())
 
-        # 10) Load graphics
-        self.elevator_img = pygame.transform.scale(
-            pygame.image.load("elevator.bmp").convert(),
-            (shaft_width, self.floor_height),
-        )
-        self.elevator_img_open = pygame.transform.scale(
-            pygame.image.load("elevator_open.bmp").convert(),
-            (shaft_width, self.floor_height),
-        )
-        self.GUEST_SIZE = 40
-        self.guest_img = pygame.transform.scale(
-            pygame.image.load("stick_1.bmp").convert_alpha(),
-            (self.GUEST_SIZE, self.GUEST_SIZE),
-        )
+        # 10) Load graphics (skip in headless mode)
+        if not headless:
+            import pygame
+            self.elevator_img = pygame.transform.scale(
+                pygame.image.load("elevator.bmp").convert(),
+                (shaft_width, self.floor_height),
+            )
+            self.elevator_img_open = pygame.transform.scale(
+                pygame.image.load("elevator_open.bmp").convert(),
+                (shaft_width, self.floor_height),
+            )
+            self.GUEST_SIZE = 40
+            self.guest_img = pygame.transform.scale(
+                pygame.image.load("stick_1.bmp").convert_alpha(),
+                (self.GUEST_SIZE, self.GUEST_SIZE),
+            )
 
         # 11) Visualization interval & buttons
         self.visualize_every = visualize_every
-        self._setup_buttons()
+        if not headless:
+            self._setup_buttons()
 
     def _setup_buttons(self):
+        import pygame
         btn_w, btn_h = 30, 30
         x0 = self.waiting_area_x + 5
         y0 = 5
         self.btn_minus = pygame.Rect(x0, y0, btn_w, btn_h)
         self.btn_plus = pygame.Rect(x0 + 40, y0, btn_w, btn_h)
-        self.btn_times2 = pygame.Rect(x0 + 80, y0, btn_w, btn_h)  # Neuer Button
+        self.btn_times2 = pygame.Rect(x0 + 80, y0, btn_w, btn_h)
 
     def log(self, time, guest_id, mode, wait_time, travel_time):
         """Writes a log entry."""
@@ -182,6 +187,7 @@ class Building:
         self.waiting_guests.append(guest)
 
     def draw(self):
+        import pygame
         # 1) Background
         self.screen.fill(self.colors["white"])
         pygame.draw.rect(
@@ -485,12 +491,21 @@ class Building:
             yield self.env.timeout(1)
 
     def run(self):
-        print("Hello world")
+        if self.headless:
+            yield from self._run_headless()
+        else:
+            yield from self._run_visual()
+
+    def _run_headless(self):
+        while True:
+            yield self.env.timeout(1)
+
+    def _run_visual(self):
+        import pygame
         running = True
         skip_to_end = False
 
         while running:
-            # Repeat self.visualize_every steps
             for _ in range(int(self.visualize_every)):
                 if skip_to_end:
                     break
@@ -498,7 +513,6 @@ class Building:
                 while (
                     not skip_to_end and pygame.time.get_ticks() - step_start_time < 1000
                 ):
-                    # Handle events
                     for e in pygame.event.get():
                         if e.type == pygame.QUIT:
                             pygame.quit()
@@ -512,22 +526,17 @@ class Building:
                                 self.visualize_every = min(
                                     3600, self.visualize_every * 2
                                 )
-
                         elif e.type == pygame.KEYDOWN:
                             if e.key == pygame.K_SPACE:
                                 skip_to_end = True
                                 break
 
-                    # Draw
                     self.draw()
                     pygame.display.flip()
-                    self.clock.tick(60)  # Max 60 FPS
+                    self.clock.tick(60)
 
-                yield self.env.timeout(
-                    1 * self.visualize_every
-                )  # 1 SimPy step = 1 minute
+                yield self.env.timeout(1 * self.visualize_every)
 
             if skip_to_end:
-                # Run the simulation to the end
                 while True:
                     yield self.env.timeout(1)
